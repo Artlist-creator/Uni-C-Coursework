@@ -4,18 +4,30 @@
 
 // Hangman game
 
-struct word
+struct wordList_tag
 {
-    size_t len;
-    char *text;
-};
-
-struct wordList
-{
-    struct word *index[90000];
+    struct word_tag *index[90000];
     size_t lenOfWord;
     size_t len;
 } * words; // declare words with wordlist;
+
+struct word_tag
+{
+    size_t len;
+    char *text;
+} secretWord;
+
+//Build a dict of letterGuessed
+struct list_tag
+{
+    struct letter *index;
+
+} * letterGuessed;
+
+struct letter
+{
+    char *word;
+};
 
 // -----------------------------------
 
@@ -23,13 +35,13 @@ void srandom(unsigned int seed);
 
 int getRandom(int len)
 {
-    /* Returns a number within a range of (0, len) */
-    srand(0);
+    /* Returns a number in range of (0, len) */
+    srand(0); //seed O for test and debug
     int num = rand() % (len + 1);
     return num;
 }
 
-void loadWords(char const *fileName)
+void loadWords(const char *fileName)
 {
 
     /* Returns a list of valid words. Words are strings of uppercase letters.
@@ -37,10 +49,10 @@ void loadWords(char const *fileName)
     Depending on the size of the word list, this function may
     take a while to finish. */
 
-    printf("Loading word list from file...");
+    printf("Loading word list from file...\n");
     char temp[30];
     size_t counter = 0;
-    words = malloc(sizeof(struct wordList));
+    words = malloc(sizeof(struct wordList_tag));
     words->lenOfWord = 1;
 
     FILE *LIST = fopen(fileName, "r");
@@ -59,7 +71,7 @@ void loadWords(char const *fileName)
         }
 
         //Allocate memory for words's elements
-        words->index[counter] = malloc(sizeof(struct word));
+        words->index[counter] = malloc(sizeof(struct word_tag));
         words->index[counter]->text = malloc(len * sizeof(char) + 1);
 
         //Get String and len for words
@@ -70,30 +82,60 @@ void loadWords(char const *fileName)
     words->len = counter;
 }
 
-// char chooseWord(wordlist):
-//     """
-//     wordlist (list): list of words (strings)
+struct word_tag chooseWord()
+{
+    //     """
+    //     secretWord (struct): contains its length and string
 
-//     Returns a word from wordlist at random
-//     """
-//     return random.choice(wordlist)
+    //     Returns secretWord from struct word from words (struct wordList) at random
+    //     """
+    int indexOfSWord = getRandom(words->len);
+    secretWord.text = words->index[indexOfSWord]->text;
+    secretWord.len = words->index[indexOfSWord]->len;
+    return secretWord;
+}
 
-// //  Load the list of words into the variable wordlist
-// //  so that it can be accessed from anywhere in the program
-// wordlist = loadWords()
+short isWordGuessed()
+{
+    /* secretWord: string, the word the user is guessing
+    lettersGuessed: list, what letters have been guessed so far
+    returns: 1 if all the letters of secretWord are in lettersGuessed;
+    0 otherwise */
+    if (secretWord.len == 0)
+    {
+        return 1;
+    }
+    return 0;
+}
+void getGuessedWord()
+{
+    /* 
+    secretWord : string, the word the user is guessing
+    lettersGuessed : list, what letters have been guessed so far
+    returns : string, comprised of letters and underscores that
+    represents what letters in secretWord have been guessed so far. 
+    */
+   for(int i; i< secretWord.len; i++){
+       
+   }
+   
+}
 
-// int isWordGuessed(secretWord, lettersGuessed):
-//    /*  secretWord: string, the word the user is guessing
-//     lettersGuessed: list, what letters have been guessed so far
-//     returns: boolean, True if all the letters of secretWord are in lettersGuessed;
-//       False otherwise */
+int main()
+{
+    //  Load the list of words into the variable wordlist
+    //  so that it can be accessed from anywhere in the program
 
-// char getGuessedWord(secretWord, lettersGuessed):
+    loadWords("words.txt");
+    chooseWord();
+    short i = isWordGuessed();
+    printf("%d \n", i);
+    printf("%s \n", secretWord.text);
+    printf("%ld \n", secretWord.len);
 
-//    /*  secretWord: string, the word the user is guessing
-//     lettersGuessed: list, what letters have been guessed so far
-//     returns: string, comprised of letters and underscores that represents
-//       what letters in secretWord have delbeen guessed so far.*/
+    // chooseWord();
+    // printf("%c", secretWord);
+}
 
 // char getAvailableLetters(lettersGuessed):
 
@@ -126,7 +168,3 @@ void loadWords(char const *fileName)
 //     hangman(secretWord)
 //     hangman(chooseWord(wordlist))
 // } */
-
-
-
-

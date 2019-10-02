@@ -117,7 +117,7 @@ int main()
             time(&endRec);
             double totTime = difftime(endRec, strRec);
             int hours = (int)totTime / 3600;
-            int minutes = (int)totTime / 60;
+            int minutes = ((int)totTime - hours * 3600)/ 60;
             int secs = totTime - hours * 3600 - minutes * 60;
             printf("You have won the game in %d turn(s) within %d:%d:%d", turn, hours, minutes, secs);
             done = 0;
